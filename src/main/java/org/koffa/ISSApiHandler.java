@@ -23,6 +23,7 @@ public class ISSApiHandler {
         }
     }
     private  String getJson(URL url) {
+        if(url == null) throw new RuntimeException("URL can't be null.");
         StringBuilder strResp = new StringBuilder();
         try {
             Scanner sc = new Scanner(url.openStream());
@@ -30,13 +31,18 @@ public class ISSApiHandler {
                 strResp.append(sc.nextLine());
             }
             sc.close();
+            return String.valueOf(strResp);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return String.valueOf(strResp);
     }
     private static IssNow getIssNow(String json) {
+        if(json.isEmpty()) throw new RuntimeException("Json string can't be empty.");
         Gson gson = new GsonBuilder().create();
-        return gson.fromJson(json, IssNow.class);
+        try {
+            return gson.fromJson(json, IssNow.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
