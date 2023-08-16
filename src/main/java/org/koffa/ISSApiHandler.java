@@ -10,10 +10,13 @@ import java.util.Scanner;
 
 public class ISSApiHandler {
     public IssNow getIssNow() {
-        return getIssNow(
-                getJson(
-                        getUrl()
-                ));
+        Gson gson = new GsonBuilder().create();
+        try {
+            // Return json as IssNow-object
+            return gson.fromJson(getJson(getUrl()), IssNow.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     private URL getUrl() {
         try {
@@ -33,15 +36,6 @@ public class ISSApiHandler {
             sc.close();
             return String.valueOf(strResp);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private static IssNow getIssNow(String json) {
-        if(json.isEmpty()) throw new RuntimeException("Json string can't be empty.");
-        Gson gson = new GsonBuilder().create();
-        try {
-            return gson.fromJson(json, IssNow.class);
-        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
